@@ -40,10 +40,7 @@ export function Sidebar() {
     <div className="flex flex-col h-full bg-white border-r border-slate-200 w-64 shadow-sm">
       <div className="p-6">
         <Link href="/dashboard" className="flex items-center gap-3 group">
-          <div className="bg-indigo-600 p-2 rounded-xl text-white shadow-indigo-200 shadow-lg group-hover:scale-110 transition-transform">
-            <BookOpen size={24} />
-          </div>
-          <h1 className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-indigo-400">
+          <h1 className="text-xl font-bold tracking-tight text-indigo-600">
             EduPlus
           </h1>
         </Link>
@@ -59,7 +56,7 @@ export function Sidebar() {
             return (
               <Link key={item.href} href={item.href}>
                 <div className={cn(
-                  "relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
+                  "relative flex items-center gap-6 my-3 px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group",
                   isActive
                     ? "bg-indigo-50 text-indigo-700 shadow-sm"
                     : "text-slate-600 hover:bg-slate-50 hover:text-indigo-600"
@@ -67,11 +64,11 @@ export function Sidebar() {
                   {isActive && (
                     <motion.div
                       layoutId="sidebar-active"
-                      className="absolute left-0 w-1 h-6 bg-indigo-600 rounded-r-full"
+                      className="absolute left-0 w-0.5 h-6 bg-indigo-600 rounded-r-full"
                       transition={{ type: "spring", stiffness: 300, damping: 30 }}
                     />
                   )}
-                  <Icon className={cn("w-5 h-5 transition-colors", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-400")} />
+                  <Icon className={cn("w-5 h-5 transition-colors", isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-500")} />
                   {item.label}
                 </div>
               </Link>
@@ -113,7 +110,7 @@ export function Sidebar() {
       </nav>
 
       <div className="p-4 mt-auto">
-        <div className="bg-slate-900 rounded-2xl p-4 text-white mb-4 relative overflow-hidden group">
+        {/* <div className="bg-slate-900 rounded-2xl p-4 text-white mb-4 relative overflow-hidden group">
           <div className="absolute -right-4 -top-4 w-20 h-20 bg-indigo-600/20 rounded-full blur-xl group-hover:bg-indigo-600/40 transition-colors" />
           <div className="relative z-10">
             <div className="flex items-center gap-2 mb-2">
@@ -125,7 +122,7 @@ export function Sidebar() {
               Upgrade Now
             </Button>
           </div>
-        </div>
+        </div> */}
 
         <Button
           variant="ghost"

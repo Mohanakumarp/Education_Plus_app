@@ -20,8 +20,8 @@ export function PomodoroTimer() {
 
     const config = {
         study: { label: "Focus", time: 25 * 60, color: "text-indigo-600", bg: "bg-indigo-50", accent: "bg-indigo-600" },
-        "short-break": { label: "Quick Rest", time: 5 * 60, color: "text-teal-600", bg: "bg-teal-50", accent: "bg-teal-600" },
-        "long-break": { label: "Long Rest", time: 15 * 60, color: "text-blue-600", bg: "bg-blue-50", accent: "bg-blue-600" },
+        "short-break": { label: "Quick Rest", time: 5 * 60, color: "text-indigo-600", bg: "bg-indigo-50", accent: "bg-indigo-600" },
+        "long-break": { label: "Long Rest", time: 15 * 60, color: "text-indigo-600", bg: "bg-indigo-50", accent: "bg-indigo-600" },
     };
 
     useEffect(() => {
@@ -79,7 +79,7 @@ export function PomodoroTimer() {
     const progress = (timeLeft / config[mode].time) * 100;
 
     return (
-        <Card className="border-none shadow-xl overflow-hidden rounded-3xl group">
+        <Card className="border-none shadow-md overflow-hidden rounded-2xl group">
             <CardHeader className={cn("transition-colors duration-500 pb-2", config[mode].bg)}>
                 <div className="flex justify-between items-center">
                     <CardTitle className={cn("text-sm font-bold uppercase tracking-widest", config[mode].color)}>
@@ -132,7 +132,7 @@ export function PomodoroTimer() {
                     </Button>
                     <Button
                         size="lg"
-                        className={cn("rounded-2xl h-14 px-10 shadow-lg transition-all active:scale-95 text-white font-bold", config[mode].accent)}
+                        className={cn("rounded-lg h-14 px-10 shadow-sm transition-all active:scale-95 text-white font-bold", config[mode].accent)}
                         onClick={toggleTimer}
                     >
                         {isActive ? (
@@ -152,7 +152,7 @@ export function PomodoroTimer() {
                     <button
                         onClick={() => switchMode("study")}
                         className={cn(
-                            "flex-1 py-1.5 rounded-xl text-xs font-bold transition-all",
+                            "flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all",
                             mode === "study" ? "bg-white shadow-sm text-indigo-600" : "text-slate-400 hover:text-slate-600"
                         )}
                     >
@@ -161,8 +161,8 @@ export function PomodoroTimer() {
                     <button
                         onClick={() => switchMode("short-break")}
                         className={cn(
-                            "flex-1 py-1.5 rounded-xl text-xs font-bold transition-all",
-                            mode === "short-break" ? "bg-white shadow-sm text-teal-600" : "text-slate-400 hover:text-slate-600"
+                            "flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                            mode === "short-break" ? "bg-white shadow-sm text-indigo-600" : "text-slate-400 hover:text-slate-600"
                         )}
                     >
                         Rest
@@ -170,8 +170,8 @@ export function PomodoroTimer() {
                     <button
                         onClick={() => switchMode("long-break")}
                         className={cn(
-                            "flex-1 py-1.5 rounded-xl text-xs font-bold transition-all",
-                            mode === "long-break" ? "bg-white shadow-sm text-blue-600" : "text-slate-400 hover:text-slate-600"
+                            "flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all",
+                            mode === "long-break" ? "bg-white shadow-sm text-indigo-600" : "text-slate-400 hover:text-slate-600"
                         )}
                     >
                         Long
