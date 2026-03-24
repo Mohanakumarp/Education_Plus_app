@@ -17,8 +17,8 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222.2 47.4% 11.2%;
 
-  /* Primary - Indigo 600 */
-  --primary: 221.2 83.2% 53.3%;
+  /* Primary - Indigo 600 (Desaturated for refinement) */
+  --primary: 221.2 75% 56%;
   --primary-foreground: 210 40% 98%;
 
   /* Secondary - Slate 100 */

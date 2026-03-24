@@ -85,6 +85,7 @@ export function Editor({ note }: EditorProps) {
                 placeholder: "Start typing your notes here...",
             }),
         ],
+        immediatelyRender: false,
         content: note.content,
         editorProps: {
             attributes: {

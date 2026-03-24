@@ -56,14 +56,14 @@ export default function LoginPage() {
       animate={{ opacity: 1, scale: 1 }}
       className="w-full max-w-md"
     >
-      <Card className="border-none shadow-2xl rounded-3xl overflow-hidden bg-white/80 backdrop-blur-xl ring-1 ring-slate-100">
-        <CardHeader className="space-y-4 pt-10 pb-6 text-center">
+      <Card className="border-shadow-md rounded-2xl overflow-hidden bg-white ring-1 ring-slate-200">
+        <CardHeader className="space-y-4 pt-8 pb-6 text-center">
           <div className="flex justify-center flex-col items-center gap-3">
-            <div className="bg-indigo-600 p-2 rounded-2xl text-white shadow-indigo-200 shadow-xl mb-4 group-hover:scale-110 transition-transform">
-              <Sparkles size={24} />
-            </div>
-            <CardTitle className="text-3xl font-black text-slate-900 tracking-tight">Welcome Back!</CardTitle>
-            <CardDescription className="text-slate-500 max-w-xs mx-auto">
+            {/* <div className="bg-indigo-600 p-2 rounded-lg text-white shadow-sm transition-transform">
+              <Sparkles size={22} />
+            </div> */}
+            <CardTitle className="text-2xl font-bold text-slate-900 tracking-tight">Welcome Back!</CardTitle>
+            <CardDescription className="text-slate-500 max-w-xs mx-auto text-sm">
               Sign in to continue managing your study routine with ease.
             </CardDescription>
           </div>
@@ -79,7 +79,7 @@ export default function LoginPage() {
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="rounded-xl h-12 bg-slate-50 border-slate-100 focus-visible:ring-indigo-600"
+                  className="rounded-lg h-11 bg-slate-50 border-slate-200 focus-visible:ring-indigo-600"
                   required
                 />
               </div>
@@ -93,7 +93,7 @@ export default function LoginPage() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="rounded-xl h-12 bg-slate-50 border-slate-100 focus-visible:ring-indigo-600"
+                  className="rounded-lg h-11 bg-slate-50 border-slate-200 focus-visible:ring-indigo-600"
                   required
                 />
               </div>
@@ -109,7 +109,7 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-6 pb-10">
-            <Button className="w-full h-12 rounded-xl text-base font-bold shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 transition-all active:scale-[0.98]" type="submit" disabled={loading}>
+            <Button className="w-full text-white h-11 rounded-lg text-base font-semibold shadow-sm bg-indigo-600 hover:bg-indigo-700 transition-all active:scale-[0.98]" type="submit" disabled={loading}>
               {loading ? (
                 <div className="flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" /> Logging in...
@@ -123,15 +123,15 @@ export default function LoginPage() {
             </div>
 
             <div className="grid grid-cols-1 w-full gap-4">
-              <Button variant="outline" className="h-12 rounded-xl border-slate-200 text-slate-600 hover:bg-slate-50 font-bold flex items-center justify-center gap-3">
-                <img src="https://www.google.com/favicon.ico" className="w-4 h-4 grayscale group-hover:grayscale-0" alt="Google" />
+              <Button variant="outline" className="h-11 rounded-lg border-slate-200 text-slate-600 hover:bg-slate-50 font-semibold flex items-center justify-center gap-3">
+                <img src="https://www.google.com/favicon.ico" className="w-4 h-4 grayscale" alt="Google" />
                 Google Account
               </Button>
             </div>
 
             <p className="text-sm text-center text-slate-500">
               Don&apos;t have an account?{" "}
-              <Link href="/register" className="text-indigo-600 font-bold hover:underline">
+              <Link href="/register" className="text-indigo-600 font-semibold hover:underline">
                 Create one now
               </Link>
             </p>

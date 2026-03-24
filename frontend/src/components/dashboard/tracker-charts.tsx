@@ -29,10 +29,10 @@ const data = [
 ];
 
 const subjectsData = [
-    { name: "Physics", value: 35, color: "#3b82f6" },
-    { name: "Data St.", value: 45, color: "#6366f1" },
-    { name: "Circuits", value: 15, color: "#10b981" },
-    { name: "Math", value: 5, color: "#f43f5e" },
+    { name: "Physics", value: 35, color: "#4f46e5" },
+    { name: "Data St.", value: 45, color: "#4f46e5" },
+    { name: "Circuits", value: 15, color: "#4f46e5" },
+    { name: "Math", value: 5, color: "#4f46e5" },
 ];
 
 export function TrackerCharts() {
@@ -41,19 +41,19 @@ export function TrackerCharts() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                     { label: "Total Focus", value: "24.5h", icon: Clock, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Knowledge Eq", value: "85%", icon: BrainCircuit, color: "text-teal-600", bg: "bg-teal-50" },
-                    { label: "Max Streak", value: "12 Days", icon: Trophy, color: "text-amber-600", bg: "bg-amber-50" },
-                    { label: "Target Gap", value: "-4h", icon: Target, color: "text-rose-600", bg: "bg-rose-50" },
+                    { label: "Knowledge Eq", value: "85%", icon: BrainCircuit, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Max Streak", value: "12 Days", icon: Trophy, color: "text-indigo-600", bg: "bg-indigo-50" },
+                    { label: "Target Gap", value: "-4h", icon: Target, color: "text-indigo-600", bg: "bg-indigo-50" },
                 ].map((stat, i) => (
-                    <Card key={i} className="border-none shadow-sm rounded-2xl overflow-hidden group">
+                    <Card key={i} className="border-none shadow-sm rounded-xl overflow-hidden group">
                         <CardContent className="p-6">
-                            <div className="flex items-center gap-4">
-                                <div className={cn("p-3 rounded-2xl transition-transform group-hover:scale-110", stat.bg, stat.color)}>
-                                    <stat.icon size={24} />
+                            <div className="flex items-center gap-3">
+                                <div className={cn("p-2.5 rounded-lg transition-transform group-hover:scale-105", stat.bg, stat.color)}>
+                                    <stat.icon size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{stat.label}</p>
-                                    <p className="text-2xl font-black text-slate-900 mt-1">{stat.value}</p>
+                                    <p className="text-xs font-semibold text-slate-500 uppercase tracking-wide">{stat.label}</p>
+                                    <p className="text-2xl font-bold text-slate-900 mt-0.5">{stat.value}</p>
                                 </div>
                             </div>
                         </CardContent>
@@ -61,13 +61,13 @@ export function TrackerCharts() {
                 ))}
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                <Card className="lg:col-span-8 border-none shadow-sm rounded-3xl overflow-hidden">
-                    <CardHeader className="p-8 pb-0">
-                        <CardTitle className="text-xl font-bold">Study Insights</CardTitle>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                <Card className="lg:col-span-8 border-none shadow-sm rounded-2xl overflow-hidden">
+                    <CardHeader className="p-6 pb-0">
+                        <CardTitle className="text-lg font-semibold">Study Insights</CardTitle>
                         <CardDescription>Track your weekly concentration flow.</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-8">
+                    <CardContent className="p-6">
                         <div className="h-[400px] w-full mt-4">
                             <ResponsiveContainer width="100%" height="100%">
                                 <AreaChart data={data}>
@@ -108,12 +108,12 @@ export function TrackerCharts() {
                     </CardContent>
                 </Card>
 
-                <Card className="lg:col-span-4 border-none shadow-sm rounded-3xl overflow-hidden self-stretch flex flex-col">
-                    <CardHeader className="p-8 pb-2">
-                        <CardTitle className="text-xl font-bold">Time Allocation</CardTitle>
+                <Card className="lg:col-span-4 border-none shadow-sm rounded-2xl overflow-hidden self-stretch flex flex-col">
+                    <CardHeader className="p-6 pb-2">
+                        <CardTitle className="text-lg font-semibold">Time Allocation</CardTitle>
                         <CardDescription>By Subject</CardDescription>
                     </CardHeader>
-                    <CardContent className="p-8 flex-1">
+                    <CardContent className="p-6 flex-1">
                         <div className="h-[250px] w-full relative">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={subjectsData} layout="vertical">
@@ -154,21 +154,21 @@ export function TrackerCharts() {
                 </Card>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
-                    <CardHeader className="p-8 flex flex-row items-center justify-between">
-                        <CardTitle className="text-xl font-bold">Note Activity</CardTitle>
-                        <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Daily Goal: 5</span>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card className="border-none shadow-sm rounded-2xl overflow-hidden bg-white">
+                    <CardHeader className="p-6 flex flex-row items-center justify-between">
+                        <CardTitle className="text-lg font-semibold">Note Activity</CardTitle>
+                        <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Daily Goal: 5</span>
                     </CardHeader>
-                    <CardContent className="p-8 pt-0">
+                    <CardContent className="p-6 pt-4">
                         <div className="h-[150px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <BarChart data={data}>
                                     <Bar
                                         dataKey="notes"
-                                        fill="#6366f1"
-                                        radius={[10, 10, 10, 10]}
-                                        barSize={40}
+                                        fill="#4f46e5"
+                                        radius={[8, 8, 8, 8]}
+                                        barSize={36}
                                     />
                                 </BarChart>
                             </ResponsiveContainer>
@@ -176,21 +176,21 @@ export function TrackerCharts() {
                     </CardContent>
                 </Card>
 
-                <Card className="border-none shadow-sm rounded-3xl overflow-hidden bg-white">
-                    <CardHeader className="p-8 flex flex-row items-center justify-between">
-                        <CardTitle className="text-xl font-bold">Quiz Performance</CardTitle>
-                        <span className="text-[10px] font-black text-teal-600 bg-teal-50 px-2 py-1 rounded">Avg: 78%</span>
+                <Card className="border-none shadow-sm rounded-2xl overflow-hidden bg-white">
+                    <CardHeader className="p-6 flex flex-row items-center justify-between">
+                        <CardTitle className="text-lg font-semibold">Quiz Performance</CardTitle>
+                        <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Avg: 78%</span>
                     </CardHeader>
-                    <CardContent className="p-8 pt-0">
+                    <CardContent className="p-6 pt-4">
                         <div className="h-[150px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={data}>
                                     <Line
                                         type="monotone"
                                         dataKey="quizzes"
-                                        stroke="#10b981"
-                                        strokeWidth={4}
-                                        dot={{ r: 4, fill: "#fff", stroke: "#10b981", strokeWidth: 2 }}
+                                        stroke="#4f46e5"
+                                        strokeWidth={3}
+                                        dot={{ r: 4, fill: "#fff", stroke: "#4f46e5", strokeWidth: 2 }}
                                     />
                                 </LineChart>
                             </ResponsiveContainer>

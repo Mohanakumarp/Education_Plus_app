@@ -134,7 +134,7 @@ export function Recorder({ onTranscription }: RecorderProps) {
                         </Button>
                     ) : (
                         <Button
-                            className="rounded-xl h-12 px-6 bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 font-bold"
+                            className="rounded-xl h-12 px-6 text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 font-bold"
                             onClick={startRecording}
                             disabled={isTranscribing}
                         >

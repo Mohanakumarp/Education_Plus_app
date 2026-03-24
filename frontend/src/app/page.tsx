@@ -89,7 +89,7 @@ export default function Home() {
               </div>
 
               <div className="relative mx-auto max-w-xl lg:max-w-none">
-                <div className="rounded-2xl bg-white p-2 shadow-2xl ring-1 ring-gray-900/10">
+                <div className="rounded-2xl bg-white p-2 shadow-md ring-1 ring-gray-900/5">
                   <div className="relative rounded-xl overflow-hidden bg-slate-900 aspect-[4/3] flex items-center justify-center text-white">
                     {/* Dashboard Preview Mockup */}
                     <div className="absolute inset-0 opacity-20 pointer-events-none">
@@ -112,8 +112,8 @@ export default function Home() {
                   </div>
                 </div>
                 {/* Decorative Elements */}
-                <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-teal-400/20 blur-2xl" />
-                <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-indigo-600/20 blur-3xl" />
+                <div className="absolute -top-6 -right-6 h-24 w-24 rounded-full bg-indigo-400/10 blur-2xl" />
+                <div className="absolute -bottom-10 -left-10 h-32 w-32 rounded-full bg-indigo-600/10 blur-3xl" />
               </div>
             </div>
           </div>

@@ -24,9 +24,9 @@ export default function AuthLayout({
           </div>
 
           <Link href="/" className="flex items-center gap-3 relative z-10 text-white">
-            <div className="bg-white p-2 rounded-xl text-indigo-600 shadow-xl">
+            {/* <div className="bg-white p-2 rounded-xl text-indigo-600 shadow-xl">
               <GraduationCap size={32} />
-            </div>
+            </div> */}
             <span className="text-2xl font-bold tracking-tight">EduPlus</span>
           </Link>
 
@@ -51,7 +51,7 @@ export default function AuthLayout({
           </div>
 
           <p className="text-indigo-200 text-sm relative z-10">
-            © 2024 Education Plus. All rights reserved.
+            Education Plus
           </p>
         </div>
 
