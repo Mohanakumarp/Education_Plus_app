@@ -5,3 +5,8 @@ requests
 sumy
 nltk
 numpy<2.0
+dotenv
+openai-whisper
+langchain_google_genai
+langchain
+lanchain.prompts

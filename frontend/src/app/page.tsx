@@ -172,8 +172,8 @@ export default function Home() {
                           <feature.icon className="h-6 w-6" aria-hidden="true" />
                         </div>
                         <span className="text-lg font-bold leading-7 text-gray-900">{feature.name}</span>
-                        <dd className="text-base leading-7 text-gray-600">{feature.description}</dd>
                       </dt>
+                      <dd className="text-base leading-7 text-gray-600">{feature.description}</dd>
                     </CardContent>
                   </Card>
                 ))}

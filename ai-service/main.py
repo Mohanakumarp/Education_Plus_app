@@ -21,7 +21,7 @@ from sumy.utils import get_stop_words
 
 # LangChain imports
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from langchain_core.output_parsers import JsonOutputParser
 
 load_dotenv()

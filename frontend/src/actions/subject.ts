@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import connectDB from "@/lib/db";
 import Subject from "@/models/Subject";
 import { revalidatePath } from "next/cache";
+import fs from "fs";
 
 export async function createSubject(formData: FormData) {
   const session = await auth();
@@ -51,3 +52,10 @@ export async function deleteSubject(subjectId: string) {
     return { error: "Failed to delete subject" };
   }
 }
+
+// Read subject.ts
+const subjectContent = fs.readFileSync(
+  "d:\\Education_Plus_app\\frontend\\src\\actions\\subject.ts",
+  "utf-8"
+);
+console.log(subjectContent);

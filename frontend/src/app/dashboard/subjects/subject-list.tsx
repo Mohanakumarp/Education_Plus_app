@@ -41,12 +41,18 @@ interface Subject {
 export function SubjectList({ subjects }: { subjects: Subject[] }) {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleCreate(formData: FormData) {
     setLoading(true);
-    await createSubject(formData);
+    setError(null);
+    const result = await createSubject(formData);
     setLoading(false);
-    setOpen(false);
+    if (result?.error) {
+      setError(result.error);
+    } else {
+      setOpen(false);
+    }
   }
 
   async function handleDelete(id: string) {
@@ -72,8 +78,19 @@ export function SubjectList({ subjects }: { subjects: Subject[] }) {
                 Create a container for your notes and study materials.
               </DialogDescription>
             </DialogHeader>
-            <form action={handleCreate}>
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                await handleCreate(formData);
+              }}
+            >
               <div className="space-y-4 py-4">
+                {error && (
+                  <div className="p-3 bg-red-50 text-red-600 rounded text-sm">
+                    {error}
+                  </div>
+                )}
                 <div className="space-y-2">
                   <Label htmlFor="name">Subject Name</Label>
                   <Input id="name" name="name" required placeholder="e.g. Mathematics" />
@@ -84,9 +101,11 @@ export function SubjectList({ subjects }: { subjects: Subject[] }) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="color">Color Code</Label>
-                  <div className="flex gap-2">
-                    <Input id="color" name="color" type="color" defaultValue="#4f46e5" className="w-12 h-10 p-1" />
-                    <Input disabled value="Pick a color for this subject" className="flex-1" />
+                  <div className="flex gap-3 items-center">
+                    <div className="flex-shrink-0">
+                      <Input id="color" name="color" type="color" defaultValue="#4f46e5" className="w-14 h-10 p-0.5 cursor-pointer border border-input rounded opacity-100" style={{ accentColor: "#4f46e5" }} />
+                    </div>
+                    <span className="text-sm text-foreground">Pick a color for this subject</span>
                   </div>
                 </div>
               </div>
