@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { createTask, toggleTaskStatus } from "@/actions/task";
@@ -10,7 +10,7 @@ interface QuickTasksProps {
     initialTasks: any[];
 }
 
-export function QuickTasks({ initialTasks }: QuickTasksProps) {
+function QuickTasksComponent({ initialTasks }: QuickTasksProps) {
     const [tasks, setTasks] = useState(initialTasks);
     const [loading, setLoading] = useState<string | null>(null);
     const [newTitle, setNewTitle] = useState("");
@@ -108,3 +108,7 @@ function CheckIcon({ size, className, strokeWidth }: { size?: number, className?
         </svg>
     );
 }
+
+// Memoize to prevent unnecessary re-renders
+export const QuickTasks = memo(QuickTasksComponent);
+

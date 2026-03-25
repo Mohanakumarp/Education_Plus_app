@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, memo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Play, Pause, RotateCcw, Coffee, BookOpen, Volume2, VolumeX } from "lucide-react";
@@ -10,7 +10,7 @@ import { saveStudySession } from "@/actions/tracker";
 
 type Mode = "study" | "short-break" | "long-break";
 
-export function PomodoroTimer() {
+function PomodoroTimerComponent() {
     const [mode, setMode] = useState<Mode>("study");
     const [isActive, setIsActive] = useState(false);
     const [timeLeft, setTimeLeft] = useState(25 * 60);
@@ -206,3 +206,7 @@ export function PomodoroTimer() {
         </Card>
     );
 }
+
+// Memoize to prevent unnecessary re-renders
+export const PomodoroTimer = memo(PomodoroTimerComponent);
+

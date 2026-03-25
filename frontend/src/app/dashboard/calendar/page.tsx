@@ -113,7 +113,7 @@ export default function CalendarPage() {
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
                 <div>
                     <h1 className="text-4xl font-black tracking-tight text-slate-900">
-                        Study Calendar 📅
+                        Study Calendar
                     </h1>
                     <p className="text-slate-500 mt-2 font-medium">
                         Your academic schedule at a glance.
@@ -268,23 +268,6 @@ export default function CalendarPage() {
                                 onClick={() => setIsAddEventOpen(true)}
                             >
                                 <Plus className="mr-2 h-4 w-4" /> Add Event
-                            </Button>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-none shadow-sm rounded-3xl bg-slate-900 text-white relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-600/20 rounded-full -translate-y-12 translate-x-12 blur-2xl" />
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2">
-                                <Sparkles size={20} className="text-indigo-400" /> AI Scheduler
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-slate-400 text-sm leading-relaxed font-medium">
-                                "Looks like you have a busy week coming up! I've cleared Tuesday afternoon for your 'Power Study' session."
-                            </p>
-                            <Button className="w-full mt-6 rounded-xl font-bold bg-white text-slate-900 hover:bg-slate-50 h-10 shadow-lg">
-                                Optimize Week
                             </Button>
                         </CardContent>
                     </Card>

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, useMemo } from "react";
 import {
     LineChart,
     Line,
@@ -29,7 +30,7 @@ interface TrackerChartsProps {
     };
 }
 
-export function TrackerCharts({ initialData, subjectsData, stats: trackerStats }: TrackerChartsProps) {
+function TrackerChartsComponent({ initialData, subjectsData, stats: trackerStats }: TrackerChartsProps) {
     const stats = [
         { label: "Total Focus", value: trackerStats.totalFocus, icon: Clock, color: "text-indigo-600", bg: "bg-indigo-50" },
         { label: "Knowledge Eq", value: trackerStats.knowledgeEq, icon: BrainCircuit, color: "text-indigo-600", bg: "bg-indigo-50" },
@@ -197,3 +198,7 @@ export function TrackerCharts({ initialData, subjectsData, stats: trackerStats }
         </div>
     );
 }
+
+// Memoize to prevent unnecessary re-renders
+export const TrackerCharts = memo(TrackerChartsComponent);
+
