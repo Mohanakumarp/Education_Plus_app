@@ -103,7 +103,7 @@ export function SubjectList({ subjects }: { subjects: Subject[] }) {
                   <Label htmlFor="color">Color Code</Label>
                   <div className="flex gap-3 items-center">
                     <div className="flex-shrink-0">
-                      <Input id="color" name="color" type="color" defaultValue="#4f46e5" className="w-14 h-10 p-0.5 cursor-pointer border border-input rounded opacity-100" style={{ accentColor: "#4f46e5" }} />
+                      <Input id="color" name="color" type="color" defaultValue="#4f46e5" className="w-14 h-10 p-0.5 cursor-pointer border border-input rounded opacity-100" />
                     </div>
                     <span className="text-sm text-foreground">Pick a color for this subject</span>
                   </div>
@@ -122,10 +122,9 @@ export function SubjectList({ subjects }: { subjects: Subject[] }) {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {subjects.map((subject) => (
           <Card key={subject._id} className="relative hover:shadow-md transition-shadow">
-             <div 
-                className="absolute top-0 left-0 w-full h-2 rounded-t-lg" 
-                style={{ backgroundColor: subject.color }} 
-             />
+             <svg className="absolute top-0 left-0 w-full h-2 rounded-t-lg overflow-hidden" viewBox="0 0 100 2" preserveAspectRatio="none" aria-hidden="true">
+               <rect x="0" y="0" width="100" height="2" fill={subject.color} />
+             </svg>
             <CardHeader>
               <div className="flex justify-between items-start">
                 <CardTitle className="truncate pr-4">

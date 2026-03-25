@@ -76,8 +76,7 @@ export function Editor({ note }: EditorProps) {
     const [isGettingRecommendations, setIsGettingRecommendations] = useState(false);
     const [recommendations, setRecommendations] = useState<any[]>([]);
     const [showRecommendations, setShowRecommendations] = useState(false);
-    const [liveTranscription, setLiveTranscription] = useState("");
-    const currentParagraphRef = useRef<boolean>(false);
+    const lastInsertedTranscription = useRef("");
 
     const pendingSave = useRef(false);
 
@@ -168,37 +167,23 @@ export function Editor({ note }: EditorProps) {
         pendingSave.current = true;
     };
 
-    const handleTranscription = (text: string, isComplete: boolean) => {
+    const handleTranscription = (text: string, _isComplete: boolean) => {
         if (!editor) return;
 
-        // Append to live transcription
-        setLiveTranscription(prev => prev + (prev ? " " : "") + text);
+        const trimmed = text.trim();
+        if (!trimmed) return;
 
-        if (isComplete) {
-            // When transcription chunk is complete, insert into editor
-            if (!currentParagraphRef.current) {
-                // Start a new paragraph
-                editor.commands.insertContent(`<p>${text}</p>`);
-                currentParagraphRef.current = true;
-            } else {
-                // Append to existing paragraph - find the last paragraph and update it
-                const { $anchor } = editor.state.selection;
-                const lastNode = editor.state.doc.lastChild;
-                
-                if (lastNode?.type.name === 'paragraph') {
-                    // Add to existing paragraph
-                    editor.commands.insertContent(` ${text}`);
-                } else {
-                    // Create new paragraph if last node isn't a paragraph
-                    editor.commands.insertContent(`<p>${text}</p>`);
-                    currentParagraphRef.current = false;
-                }
-            }
+        // Avoid duplicate inserts when backend sends repeated partial/final payloads.
+        if (trimmed === lastInsertedTranscription.current) return;
 
-            // Auto-save after each complete chunk
-            pendingSave.current = true;
-            setContentVersion((prev) => prev + 1);
-        }
+        editor.commands.insertContentAt(editor.state.doc.content.size, {
+            type: "paragraph",
+            content: [{ type: "text", text: trimmed }],
+        });
+
+        lastInsertedTranscription.current = trimmed;
+        pendingSave.current = true;
+        setContentVersion((prev) => prev + 1);
     };
 
     // Debounced Auto-save

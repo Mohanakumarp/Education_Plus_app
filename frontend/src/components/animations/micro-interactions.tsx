@@ -281,8 +281,7 @@ export function AnimatedProgressBar({
     <div className={`h-1.5 bg-slate-200 rounded-full overflow-hidden ${className}`}>
       <div
         ref={barRef}
-        className="h-full bg-indigo-600 rounded-full"
-        style={{ width: "0%" }}
+        className="h-full w-0 bg-indigo-600 rounded-full"
       />
     </div>
   );

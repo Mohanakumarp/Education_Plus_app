@@ -293,12 +293,17 @@ async def websocket_transcribe(websocket: WebSocket):
                     # Reset chunk count for next batch
                     session.chunk_count = 0
                 
+    except WebSocketDisconnect:
+        print("🔌 Client disconnected from transcription socket")
     except Exception as e:
         print(f"❌ WebSocket error: {e}")
     finally:
         print("🔌 WebSocket disconnected")
         session.reset()
-        await websocket.close()
+        try:
+            await websocket.close()
+        except Exception:
+            pass
 
 # ============================================================================
 # AI ENDPOINTS - Summarization, Quiz, Recommendations

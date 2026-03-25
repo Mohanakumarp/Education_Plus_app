@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Clock, CheckCircle2, MoreVertical, Search, Filter } from "lucide-react";
@@ -19,6 +19,8 @@ interface Task {
     subject: string;
 }
 
+const TASKS_STORAGE_KEY = "eduplus_tasks";
+
 const initialTasks: Task[] = [
     { id: "1", title: "Complete Physics Chapter 3 Exercises", status: "todo", priority: "high", subject: "Applied Physics" },
     { id: "2", title: "Review Trees and Graphs for DS Quiz", status: "doing", priority: "medium", subject: "Data Structures" },
@@ -27,24 +29,45 @@ const initialTasks: Task[] = [
 ];
 
 export default function TasksPage() {
-    const [tasks, setTasks] = useState<Task[]>(initialTasks);
+    const [tasks, setTasks] = useState<Task[]>(() => {
+        if (typeof window === "undefined") return initialTasks;
+
+        try {
+            const stored = localStorage.getItem(TASKS_STORAGE_KEY);
+            if (!stored) return initialTasks;
+
+            const parsed = JSON.parse(stored) as Task[];
+            return Array.isArray(parsed) ? parsed : initialTasks;
+        } catch {
+            return initialTasks;
+        }
+    });
     const [newTask, setNewTask] = useState("");
+
+    useEffect(() => {
+        localStorage.setItem(TASKS_STORAGE_KEY, JSON.stringify(tasks));
+    }, [tasks]);
 
     const addTask = () => {
         if (!newTask.trim()) return;
         const task: Task = {
             id: Date.now().toString(),
-            title: newTask,
+            title: newTask.trim(),
             status: "todo",
             priority: "medium",
             subject: "General",
         };
-        setTasks([task, ...tasks]);
+        setTasks((prev) => [task, ...prev]);
         setNewTask("");
     };
 
+    const handleAddTaskSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        addTask();
+    };
+
     const toggleStatus = (id: string) => {
-        setTasks(tasks.map(t => {
+        setTasks((prev) => prev.map(t => {
             if (t.id === id) {
                 const nextStatus: Record<TaskStatus, TaskStatus> = {
                     todo: "doing",
@@ -83,18 +106,17 @@ export default function TasksPage() {
             </div>
 
             <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
-                <div className="flex flex-col md:flex-row gap-4 mb-8">
+                <form onSubmit={handleAddTaskSubmit} className="flex flex-col md:flex-row gap-4 mb-8">
                     <Input
                         placeholder="What needs to be done? e.g. Finalize lab report"
                         value={newTask}
                         onChange={(e) => setNewTask(e.target.value)}
-                        onKeyPress={(e) => e.key === "Enter" && addTask()}
                         className="flex-1 h-14 rounded-2xl bg-slate-50 border-slate-100 px-6 text-lg font-medium focus-visible:ring-indigo-600 focus-visible:ring-offset-0"
                     />
-                    <Button onClick={addTask} size="lg" className="h-14 rounded-2xl px-8 shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold transition-all active:scale-95">
+                    <Button type="submit" size="lg" className="h-14 rounded-2xl px-8 shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold transition-all active:scale-95 !text-white">
                         <Plus className="mr-2" size={24} /> ADD TASK
                     </Button>
-                </div>
+                </form>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {sections.map((section) => (
@@ -139,7 +161,11 @@ export default function TasksPage() {
                                                             </h4>
                                                         </div>
                                                         <div className="flex items-center">
-                                                            <button className="p-1.5 rounded-full hover:bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                className="p-1.5 rounded-full hover:bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                aria-label="Task options"
+                                                                title="Task options"
+                                                            >
                                                                 <MoreVertical size={16} className="text-slate-400" />
                                                             </button>
                                                         </div>
