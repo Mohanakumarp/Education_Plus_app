@@ -1,5 +1,5 @@
-import { GraduationCap } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function AuthLayout({
   children,
@@ -24,9 +24,14 @@ export default function AuthLayout({
           </div>
 
           <Link href="/" className="flex items-center gap-3 relative z-10 text-white">
-            {/* <div className="bg-white p-2 rounded-xl text-indigo-600 shadow-xl">
-              <GraduationCap size={32} />
-            </div> */}
+            <Image
+              src="/education-plus-logo.svg"
+              alt="Education Plus logo"
+              width={32}
+              height={32}
+              className="h-8 w-8 rounded-sm"
+              priority
+            />
             <span className="text-2xl font-bold tracking-tight">EduPlus</span>
           </Link>
 
@@ -56,8 +61,22 @@ export default function AuthLayout({
         </div>
 
         {/* Right Side: Form */}
-        <div className="flex-1 flex items-center justify-center p-6 relative z-10">
-          {children}
+        <div className="flex-1 flex flex-col p-6 relative z-10">
+          <Link href="/" className="lg:hidden flex items-center gap-2 text-indigo-600 mb-4 self-start">
+            <Image
+              src="/education-plus-logo.svg"
+              alt="Education Plus logo"
+              width={24}
+              height={24}
+              className="h-6 w-6 rounded-sm"
+              priority
+            />
+            <span className="text-xl font-bold tracking-tight">EduPlus</span>
+          </Link>
+
+          <div className="flex-1 flex items-center justify-center">
+            {children}
+          </div>
         </div>
       </div>
     </div>

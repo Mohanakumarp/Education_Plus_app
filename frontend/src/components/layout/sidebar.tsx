@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -40,6 +41,14 @@ export function Sidebar() {
     <div className="flex flex-col h-full bg-white border-r border-slate-200 w-64 shadow-sm">
       <div className="p-6">
         <Link href="/dashboard" className="flex items-center gap-3 group">
+          <Image
+            src="/education-plus-logo.svg"
+            alt="Education Plus logo"
+            width={28}
+            height={28}
+            className="h-7 w-7 rounded-sm"
+            priority
+          />
           <h1 className="text-xl font-bold tracking-tight text-indigo-600">
             EduPlus
           </h1>
