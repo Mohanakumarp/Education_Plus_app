@@ -8,6 +8,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Education Plus",
   description: "Advanced Academic Management & AI Study Companion",
+  icons: {
+    icon: "/education-plus-logo.svg",
+    shortcut: "/education-plus-logo.svg",
+  },
 };
 
 export default function RootLayout({

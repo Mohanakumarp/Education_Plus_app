@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { GraduationCap, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -23,8 +24,14 @@ export function Navbar() {
                 <div className="flex h-16 justify-between">
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center gap-2">
-                            <div className="rounded-lg bg-primary p-1.5 text-primary-foreground">
-                                <GraduationCap size={24} />
+                            <div className="rounded-lg border border-indigo-100 bg-white p-1">
+                                <Image
+                                    src="/education-plus-logo.svg"
+                                    alt="Education Plus logo"
+                                    width={24}
+                                    height={24}
+                                    priority
+                                />
                             </div>
                             <span className="text-xl font-bold tracking-tight">EduPlus</span>
                         </Link>
