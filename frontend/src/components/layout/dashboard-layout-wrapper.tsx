@@ -5,6 +5,8 @@ import { Sidebar } from "./sidebar";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function DashboardLayoutWrapper({
   children,
@@ -24,7 +26,17 @@ export default function DashboardLayoutWrapper({
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Mobile Header */}
         <header className="md:hidden h-16 bg-white border-b border-slate-200 flex items-center px-4 justify-between shrink-0">
-            <span className="font-bold text-xl text-indigo-600">EduPlus</span>
+            <Link href="/dashboard" className="flex items-center gap-2 text-indigo-600">
+              <Image
+                src="/education-plus-logo.svg"
+                alt="Education Plus logo"
+                width={24}
+                height={24}
+                className="h-6 w-6 rounded-sm"
+                priority
+              />
+              <span className="font-bold text-xl">EduPlus</span>
+            </Link>
             
             <Sheet open={open} onOpenChange={setOpen}>
                 <SheetTrigger asChild>

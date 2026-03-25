@@ -1,0 +1,4 @@
+.vscode/
+ai-service/.venv/
+ai-service/__pycache__/
+ai-service/.env
