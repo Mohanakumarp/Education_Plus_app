@@ -76,6 +76,8 @@ export function Editor({ note }: EditorProps) {
     const [isGettingRecommendations, setIsGettingRecommendations] = useState(false);
     const [recommendations, setRecommendations] = useState<any[]>([]);
     const [showRecommendations, setShowRecommendations] = useState(false);
+    const [liveTranscription, setLiveTranscription] = useState("");
+    const currentParagraphRef = useRef<boolean>(false);
 
     const pendingSave = useRef(false);
 
@@ -166,9 +168,36 @@ export function Editor({ note }: EditorProps) {
         pendingSave.current = true;
     };
 
-    const handleTranscription = (text: string) => {
-        if (editor) {
-            editor.commands.insertContent(`<p>${text}</p>`);
+    const handleTranscription = (text: string, isComplete: boolean) => {
+        if (!editor) return;
+
+        // Append to live transcription
+        setLiveTranscription(prev => prev + (prev ? " " : "") + text);
+
+        if (isComplete) {
+            // When transcription chunk is complete, insert into editor
+            if (!currentParagraphRef.current) {
+                // Start a new paragraph
+                editor.commands.insertContent(`<p>${text}</p>`);
+                currentParagraphRef.current = true;
+            } else {
+                // Append to existing paragraph - find the last paragraph and update it
+                const { $anchor } = editor.state.selection;
+                const lastNode = editor.state.doc.lastChild;
+                
+                if (lastNode?.type.name === 'paragraph') {
+                    // Add to existing paragraph
+                    editor.commands.insertContent(` ${text}`);
+                } else {
+                    // Create new paragraph if last node isn't a paragraph
+                    editor.commands.insertContent(`<p>${text}</p>`);
+                    currentParagraphRef.current = false;
+                }
+            }
+
+            // Auto-save after each complete chunk
+            pendingSave.current = true;
+            setContentVersion((prev) => prev + 1);
         }
     };
 
@@ -428,7 +457,7 @@ export function Editor({ note }: EditorProps) {
                                 <p className="text-slate-400 font-bold italic">"No extra resources found yet. Try writing more!"</p>
                             </div>
                         ) : (
-                            recommendations.map((rec, i) => (
+                            recommendations.map((rec: any, i: number) => (
                                 <div key={i} className="flex items-center justify-between p-5 rounded-3xl bg-slate-50 hover:bg-slate-100 transition-colors border border-slate-100 group">
                                     <div className="flex items-center gap-4">
                                         <div className={cn(
