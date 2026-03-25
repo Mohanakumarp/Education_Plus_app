@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Play, Pause, RotateCcw, Coffee, BookOpen, Volume2, VolumeX } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { saveStudySession } from "@/actions/tracker";
 
 type Mode = "study" | "short-break" | "long-break";
 
@@ -13,6 +14,7 @@ export function PomodoroTimer() {
     const [mode, setMode] = useState<Mode>("study");
     const [isActive, setIsActive] = useState(false);
     const [timeLeft, setTimeLeft] = useState(25 * 60);
+    const [startTime, setStartTime] = useState<Date | null>(null);
     const [mute, setMute] = useState(false);
     const [sessions, setSessions] = useState(0);
 
@@ -25,6 +27,10 @@ export function PomodoroTimer() {
     };
 
     useEffect(() => {
+        if (isActive && !startTime) {
+            setStartTime(new Date());
+        }
+
         if (isActive && timeLeft > 0) {
             timerRef.current = setInterval(() => {
                 setTimeLeft((prev) => prev - 1);
@@ -34,7 +40,21 @@ export function PomodoroTimer() {
             if (!mute) playBeep();
 
             if (mode === "study") {
+                // Save session to database
+                if (startTime) {
+                    const endTime = new Date();
+                    const durationMinutes = Math.round((endTime.getTime() - startTime.getTime()) / 60000);
+                    if (durationMinutes > 0) {
+                        saveStudySession({
+                            durationMinutes,
+                            startTime,
+                            endTime
+                        });
+                    }
+                }
+
                 setSessions((prev) => prev + 1);
+                setStartTime(null);
                 if (sessions > 0 && sessions % 3 === 0) {
                     switchMode("long-break");
                 } else {
@@ -42,6 +62,7 @@ export function PomodoroTimer() {
                 }
             } else {
                 switchMode("study");
+                setStartTime(null);
             }
         } else {
             if (timerRef.current) clearInterval(timerRef.current);
@@ -50,7 +71,7 @@ export function PomodoroTimer() {
         return () => {
             if (timerRef.current) clearInterval(timerRef.current);
         };
-    }, [isActive, timeLeft]);
+    }, [isActive, timeLeft, mode, sessions, startTime, mute]);
 
     const playBeep = () => {
         // Simple audio placeholder logic

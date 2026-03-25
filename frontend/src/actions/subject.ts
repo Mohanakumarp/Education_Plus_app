@@ -53,9 +53,4 @@ export async function deleteSubject(subjectId: string) {
   }
 }
 
-// Read subject.ts
-const subjectContent = fs.readFileSync(
-  "d:\\Education_Plus_app\\frontend\\src\\actions\\subject.ts",
-  "utf-8"
-);
-console.log(subjectContent);
+

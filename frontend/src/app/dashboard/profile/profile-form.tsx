@@ -177,7 +177,7 @@ export function ProfileForm({ user }: { user: any }) {
               </CardContent>
               <CardFooter className="p-8 pt-0 flex justify-between">
                 <Button variant="ghost" type="button" className="rounded-xl text-slate-400 font-bold">Discard Changes</Button>
-                <Button type="submit" disabled={loading} className="h-12 rounded-xl px-10 shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-black transition-all active:scale-95">
+                <Button type="submit" disabled={loading} className="h-12 text-white rounded-xl px-10 shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-black transition-all active:scale-95">
                   {loading ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="w-4 h-4 animate-spin" /> SAVING...

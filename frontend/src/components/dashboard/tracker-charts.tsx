@@ -18,33 +18,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { BrainCircuit, Clock, Trophy, Target } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const data = [
-    { name: "Mon", study: 4, notes: 3, quizzes: 2 },
-    { name: "Tue", study: 2, notes: 5, quizzes: 0 },
-    { name: "Wed", study: 6, notes: 2, quizzes: 4 },
-    { name: "Thu", study: 3, notes: 4, quizzes: 1 },
-    { name: "Fri", study: 5, notes: 8, quizzes: 3 },
-    { name: "Sat", study: 8, notes: 2, quizzes: 5 },
-    { name: "Sun", study: 1, notes: 1, quizzes: 0 },
-];
+interface TrackerChartsProps {
+    initialData: { name: string; study: number; notes: number; quizzes: number }[];
+    subjectsData: { name: string; value: number; color: string }[];
+    stats: {
+        totalFocus: string;
+        knowledgeEq: string;
+        maxStreak: string;
+        targetGap: string;
+    };
+}
 
-const subjectsData = [
-    { name: "Physics", value: 35, color: "#4f46e5" },
-    { name: "Data St.", value: 45, color: "#4f46e5" },
-    { name: "Circuits", value: 15, color: "#4f46e5" },
-    { name: "Math", value: 5, color: "#4f46e5" },
-];
+export function TrackerCharts({ initialData, subjectsData, stats: trackerStats }: TrackerChartsProps) {
+    const stats = [
+        { label: "Total Focus", value: trackerStats.totalFocus, icon: Clock, color: "text-indigo-600", bg: "bg-indigo-50" },
+        { label: "Knowledge Eq", value: trackerStats.knowledgeEq, icon: BrainCircuit, color: "text-indigo-600", bg: "bg-indigo-50" },
+        { label: "Max Streak", value: trackerStats.maxStreak, icon: Trophy, color: "text-indigo-600", bg: "bg-indigo-50" },
+        { label: "Target Gap", value: trackerStats.targetGap, icon: Target, color: "text-indigo-600", bg: "bg-indigo-50" },
+    ];
 
-export function TrackerCharts() {
     return (
         <div className="space-y-8 pb-12">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                    { label: "Total Focus", value: "24.5h", icon: Clock, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Knowledge Eq", value: "85%", icon: BrainCircuit, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Max Streak", value: "12 Days", icon: Trophy, color: "text-indigo-600", bg: "bg-indigo-50" },
-                    { label: "Target Gap", value: "-4h", icon: Target, color: "text-indigo-600", bg: "bg-indigo-50" },
-                ].map((stat, i) => (
+                {stats.map((stat, i) => (
                     <Card key={i} className="border-none shadow-sm rounded-xl overflow-hidden group">
                         <CardContent className="p-6">
                             <div className="flex items-center gap-3">
@@ -70,7 +66,7 @@ export function TrackerCharts() {
                     <CardContent className="p-6">
                         <div className="h-[400px] w-full mt-4">
                             <ResponsiveContainer width="100%" height="100%">
-                                <AreaChart data={data}>
+                                <AreaChart data={initialData}>
                                     <defs>
                                         <linearGradient id="colorStudy" x1="0" y1="0" x2="0" y2="1">
                                             <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1} />
@@ -163,7 +159,7 @@ export function TrackerCharts() {
                     <CardContent className="p-6 pt-4">
                         <div className="h-[150px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <BarChart data={data}>
+                                <BarChart data={initialData}>
                                     <Bar
                                         dataKey="notes"
                                         fill="#4f46e5"
@@ -179,12 +175,12 @@ export function TrackerCharts() {
                 <Card className="border-none shadow-sm rounded-2xl overflow-hidden bg-white">
                     <CardHeader className="p-6 flex flex-row items-center justify-between">
                         <CardTitle className="text-lg font-semibold">Quiz Performance</CardTitle>
-                        <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Avg: 78%</span>
+                        <span className="text-[10px] font-semibold text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Avg Score</span>
                     </CardHeader>
                     <CardContent className="p-6 pt-4">
                         <div className="h-[150px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
-                                <LineChart data={data}>
+                                <LineChart data={initialData}>
                                     <Line
                                         type="monotone"
                                         dataKey="quizzes"

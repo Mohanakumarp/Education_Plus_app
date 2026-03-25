@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Clock, CheckCircle2, MoreVertical, Search, Filter } from "lucide-react";
@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+
+import { getTasks, createTask, toggleTaskStatus, deleteTask } from "@/actions/task";
 
 type TaskStatus = "todo" | "doing" | "done";
 
@@ -19,42 +21,67 @@ interface Task {
     subject: string;
 }
 
-const initialTasks: Task[] = [
-    { id: "1", title: "Complete Physics Chapter 3 Exercises", status: "todo", priority: "high", subject: "Applied Physics" },
-    { id: "2", title: "Review Trees and Graphs for DS Quiz", status: "doing", priority: "medium", subject: "Data Structures" },
-    { id: "3", title: "Submit Digital Circuits Assignment", status: "done", priority: "high", subject: "Digital Circuits" },
-    { id: "4", title: "Read Mathematics IV Lecture Notes", status: "todo", priority: "low", subject: "Mathematics IV" },
-];
-
 export default function TasksPage() {
-    const [tasks, setTasks] = useState<Task[]>(initialTasks);
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [loading, setLoading] = useState(true);
     const [newTask, setNewTask] = useState("");
 
-    const addTask = () => {
-        if (!newTask.trim()) return;
-        const task: Task = {
-            id: Date.now().toString(),
-            title: newTask,
-            status: "todo",
-            priority: "medium",
-            subject: "General",
+    useEffect(() => {
+        const fetchTasks = async () => {
+            setLoading(true);
+            const res = await getTasks();
+            if (res.tasks) {
+                setTasks(res.tasks as any);
+            }
+            setLoading(false);
         };
-        setTasks([task, ...tasks]);
-        setNewTask("");
+        fetchTasks();
+    }, []);
+
+    const addTask = async () => {
+        if (!newTask.trim()) return;
+
+        const formData = new FormData();
+        formData.append("title", newTask.trim());
+
+        const res = await createTask(formData);
+        if (res.success) {
+            // Re-fetch to get the new task with ID
+            const updated = await getTasks();
+            if (updated.tasks) setTasks(updated.tasks as any);
+            setNewTask("");
+        } else if (res.error) {
+            alert(res.error);
+        }
     };
 
-    const toggleStatus = (id: string) => {
-        setTasks(tasks.map(t => {
-            if (t.id === id) {
-                const nextStatus: Record<TaskStatus, TaskStatus> = {
-                    todo: "doing",
-                    doing: "done",
-                    done: "todo",
-                };
-                return { ...t, status: nextStatus[t.status] };
-            }
-            return t;
-        }));
+    const handleAddTaskSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        addTask();
+    };
+
+    const handleToggleStatus = async (id: string, currentStatus: string) => {
+        const res = await toggleTaskStatus(id, currentStatus);
+        if (res.success) {
+            setTasks((prev) => prev.map(t => {
+                if (t.id === id) {
+                    const nextStatus: Record<string, TaskStatus> = {
+                        todo: "doing",
+                        doing: "done",
+                        done: "todo",
+                    };
+                    return { ...t, status: nextStatus[t.status] };
+                }
+                return t;
+            }));
+        }
+    };
+
+    const handleDeleteTask = async (id: string) => {
+        const res = await deleteTask(id);
+        if (res.success) {
+            setTasks((prev) => prev.filter(t => t.id !== id));
+        }
     };
 
     const sections: { id: TaskStatus, label: string, color: string, bg: string }[] = [
@@ -83,18 +110,17 @@ export default function TasksPage() {
             </div>
 
             <div className="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 border border-slate-100 p-8">
-                <div className="flex flex-col md:flex-row gap-4 mb-8">
+                <form onSubmit={handleAddTaskSubmit} className="flex flex-col md:flex-row gap-4 mb-8">
                     <Input
                         placeholder="What needs to be done? e.g. Finalize lab report"
                         value={newTask}
                         onChange={(e) => setNewTask(e.target.value)}
-                        onKeyPress={(e) => e.key === "Enter" && addTask()}
                         className="flex-1 h-14 rounded-2xl bg-slate-50 border-slate-100 px-6 text-lg font-medium focus-visible:ring-indigo-600 focus-visible:ring-offset-0"
                     />
-                    <Button onClick={addTask} size="lg" className="h-14 rounded-2xl px-8 shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold transition-all active:scale-95">
+                    <Button type="submit" size="lg" className="h-14 rounded-2xl px-8 shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold transition-all active:scale-95 !text-white">
                         <Plus className="mr-2" size={24} /> ADD TASK
                     </Button>
-                </div>
+                </form>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {sections.map((section) => (
@@ -116,7 +142,7 @@ export default function TasksPage() {
                                             exit={{ opacity: 0, scale: 0.9 }}
                                             className="group"
                                         >
-                                            <Card className="border-none shadow-sm hover:shadow-md transition-all cursor-pointer rounded-2xl overflow-hidden ring-1 ring-slate-100" onClick={() => toggleStatus(task.id)}>
+                                            <Card className="border-none shadow-sm hover:shadow-md transition-all cursor-pointer rounded-2xl overflow-hidden ring-1 ring-slate-100" onClick={() => handleToggleStatus(task.id, task.status)}>
                                                 <CardContent className="p-5">
                                                     <div className="flex items-start justify-between gap-4">
                                                         <div className="flex-1">
@@ -139,7 +165,13 @@ export default function TasksPage() {
                                                             </h4>
                                                         </div>
                                                         <div className="flex items-center">
-                                                            <button className="p-1.5 rounded-full hover:bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button
+                                                                className="p-1.5 rounded-full hover:bg-slate-50 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleDeleteTask(task.id);
+                                                                }}
+                                                            >
                                                                 <MoreVertical size={16} className="text-slate-400" />
                                                             </button>
                                                         </div>

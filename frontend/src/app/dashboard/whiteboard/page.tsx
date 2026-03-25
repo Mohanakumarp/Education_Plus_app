@@ -29,7 +29,7 @@ export default async function WhiteboardPage({ searchParams }: { searchParams: P
                     <Button variant="outline" className="rounded-xl border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
                         <Share2 size={18} className="mr-2" /> Invite Others
                     </Button>
-                    <Button className="rounded-xl shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold">
+                    <Button className="rounded-xl shadow-lg text-white shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold">
                         <Plus size={18} className="mr-2" /> New Board
                     </Button>
                 </div>

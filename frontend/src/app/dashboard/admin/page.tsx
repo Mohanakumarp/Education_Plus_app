@@ -19,6 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { SeedDataBtn } from "./seed-btn";
 
 export default async function AdminPage() {
     const session = await auth();
@@ -64,6 +65,19 @@ export default async function AdminPage() {
                     </p>
                 </div>
                 <div className="flex items-center gap-3">
+                    <SeedDataBtn />
+                    <Button variant="outline" className="rounded-xl border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
+                        <Settings size={18} className="mr-2" /> Settings
+                    </Button>
+                    <Button className="rounded-xl shadow-lg shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold">
+                        Generate System Report
+                    </Button>
+                </div>
+                活跃度: LOW
+                状态: ACTIVE
+                角色: EDITOR
+                文件: page.tsx
+                代码:                 <div className="flex items-center gap-3">
                     <Button variant="outline" className="rounded-xl border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
                         <Settings size={18} className="mr-2" /> Settings
                     </Button>

@@ -6,6 +6,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { useState, useEffect, useRef } from "react";
 import { updateNote } from "@/actions/note";
 import { summarizeText, generateQuiz, getRecommendations } from "@/actions/ai";
+import { saveQuizResult } from "@/actions/quiz";
 import { Toolbar } from "./toolbar";
 import { Recorder } from "./recorder";
 import { Input } from "@/components/ui/input";
@@ -123,6 +124,14 @@ export function Editor({ note }: EditorProps) {
         if (result.quiz) {
             setQuiz(result.quiz);
             setShowQuiz(true);
+
+            // Log as completed quiz
+            await saveQuizResult({
+                subjectId: (note as any).subjectId,
+                score: result.quiz.length,
+                totalQuestions: result.quiz.length,
+                topic: title || "Note Quiz"
+            });
         } else if (result.error) {
             alert(result.error);
         }
@@ -176,7 +185,7 @@ export function Editor({ note }: EditorProps) {
         try {
             // Always insert the transcribed text immediately
             const currentContent = editor.getHTML();
-            
+
             // If editor is empty or has only placeholder, replace it
             if (!currentContent || currentContent === "<p></p>" || currentContent.includes("Start typing")) {
                 editor
@@ -199,7 +208,7 @@ export function Editor({ note }: EditorProps) {
             // Mark for saving
             pendingSave.current = true;
             setContentVersion((prev) => prev + 1);
-            
+
             // Auto-save after transcription
             if (isComplete) {
                 console.log("💾 Triggering auto-save...");
