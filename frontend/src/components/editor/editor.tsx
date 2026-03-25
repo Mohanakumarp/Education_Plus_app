@@ -62,6 +62,7 @@ export function Editor({ note }: EditorProps) {
     const [tagInput, setTagInput] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<Date | null>(null);
+    const [contentVersion, setContentVersion] = useState(0);
 
     // AI States
     const [isSummarizing, setIsSummarizing] = useState(false);
@@ -94,6 +95,7 @@ export function Editor({ note }: EditorProps) {
         },
         onUpdate: () => {
             pendingSave.current = true;
+            setContentVersion((prev) => prev + 1);
         }
     });
 
@@ -189,7 +191,7 @@ export function Editor({ note }: EditorProps) {
         }, 2000);
 
         return () => clearTimeout(handler);
-    }, [title, isBookmarked, tags, editor?.state.doc.content.size, editor]);
+    }, [title, isBookmarked, tags, contentVersion, editor, note._id]);
 
     return (
         <motion.div
@@ -317,7 +319,12 @@ export function Editor({ note }: EditorProps) {
                         {tags.map((tag, idx) => (
                             <Badge key={idx} variant="secondary" className="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 border-none font-bold text-[10px] uppercase tracking-widest flex items-center gap-1 group">
                                 {tag}
-                                <button onClick={() => removeTag(tag)} className="opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button
+                                    onClick={() => removeTag(tag)}
+                                    className="opacity-0 group-hover:opacity-100 transition-opacity"
+                                    aria-label={`Remove tag ${tag}`}
+                                    title={`Remove tag ${tag}`}
+                                >
                                     <X size={10} />
                                 </button>
                             </Badge>
@@ -441,6 +448,8 @@ export function Editor({ note }: EditorProps) {
                                         href={rec.url}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label={`Open ${rec.title}`}
+                                        title={`Open ${rec.title}`}
                                         className="p-3 rounded-full bg-white text-slate-400 hover:text-indigo-600 shadow-sm opacity-0 group-hover:opacity-100 transition-all active:scale-90"
                                     >
                                         <ExternalLink size={18} />
