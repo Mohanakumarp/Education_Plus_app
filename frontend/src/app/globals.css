@@ -109,3 +109,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Override the inset-0 utility to not use calc(var(--spacing) * 0)*/ 
+  .inset-0 {
+    inset: 0 !important;
+  }
+} 
