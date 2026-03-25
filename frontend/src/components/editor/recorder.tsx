@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Mic, Square, Loader2 } from "lucide-react";
+import { Mic, Square } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -35,56 +35,77 @@ export function Recorder({ onTranscription }: RecorderProps) {
             const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
             const wsUrl = `${protocol}//${window.location.hostname}:8000/ws/transcribe`;
             
+            console.log("🔌 Attempting to connect WebSocket to:", wsUrl);
             ws.current = new WebSocket(wsUrl);
             
             ws.current.onopen = () => {
-                console.log("✅ WebSocket connected");
+                console.log("✅ WebSocket connected successfully");
             };
 
             ws.current.onmessage = (event) => {
+                console.log("📨 WebSocket onmessage triggered with raw data:", event.data);
+                
+                // Clear any pending transcription timeout
+                if ((ws.current as any).transcriptionTimeout) {
+                    clearTimeout((ws.current as any).transcriptionTimeout);
+                    (ws.current as any).transcriptionTimeout = null;
+                }
+                
                 try {
                     const data = JSON.parse(event.data);
+                    console.log("✅ Parsed JSON from WebSocket:", data);
+                    
                     if (data.text) {
+                        console.log("📝 Found text in message:", data.text);
+                        console.log("🔄 About to call onTranscription callback");
                         onTranscription(data.text, data.complete || false);
+                        console.log("✅ onTranscription callback called successfully");
+                        
+                        // If transcription is complete, reset isTranscribing state
+                        if (data.complete) {
+                            setIsTranscribing(false);
+                            console.log("✅ Transcription complete, state reset");
+                        }
+                    } else {
+                        console.warn("⚠️ No text field in WebSocket message:", data);
                     }
                 } catch (err) {
-                    console.error("Error parsing WebSocket message:", err);
+                    console.error("❌ Error parsing WebSocket message:", err);
+                    console.error("Raw event data:", event.data);
                 }
             };
 
             ws.current.onerror = (error) => {
-                console.error("WebSocket error:", error);
+                console.error("❌ WebSocket error:", error);
                 setIsTranscribing(false);
             };
 
             ws.current.onclose = () => {
-                console.log("WebSocket disconnected");
+                console.log("🔌 WebSocket disconnected");
             };
         } catch (err) {
-            console.error("Failed to connect WebSocket:", err);
+            console.error("❌ Failed to create WebSocket:", err);
         }
     };
 
     const startRecording = async () => {
         try {
-            // --- ADD THIS BLOCK ---
-            // If the WebSocket is dead, reconnect before we start recording
+            // Reconnect if WebSocket is closed
             if (!ws.current || ws.current.readyState === WebSocket.CLOSED) {
-                console.log("WebSocket is closed. Attempting to reconnect...");
+                console.log("🔄 Reconnecting WebSocket...");
                 connectWebSocket();
-                
-                // Give it half a second to establish the connection
                 await new Promise(resolve => setTimeout(resolve, 500));
             }
-            // ----------------------
 
             if (typeof window === "undefined") {
                 alert("Microphone access is not supported on server-side.");
                 return;
             }
 
+            console.log("🎤 Requesting microphone access...");
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
             streamRef.current = stream;
+            console.log("✅ Microphone access granted");
 
             mediaRecorder.current = new MediaRecorder(stream, {
                 mimeType: "audio/webm;codecs=opus",
@@ -92,20 +113,25 @@ export function Recorder({ onTranscription }: RecorderProps) {
 
             mediaRecorder.current.ondataavailable = (event) => {
                 if (event.data.size > 0 && ws.current?.readyState === WebSocket.OPEN) {
+                    console.log(`📤 Sending audio chunk (${event.data.size} bytes)`);
                     ws.current.send(event.data);
                 }
             };
 
             mediaRecorder.current.onstop = () => {
+                console.log("🛑 Recording stopped, sending end_stream signal");
                 if (ws.current?.readyState === WebSocket.OPEN) {
                     ws.current.send(JSON.stringify({ type: "end_stream" }));
+                    console.log("✅ end_stream sent");
+                } else {
+                    console.warn("⚠️ WebSocket not open, cannot send end_stream");
                 }
                 if (streamRef.current) {
                     streamRef.current.getTracks().forEach(track => track.stop());
                 }
             };
 
-            mediaRecorder.current.start(2000);
+            mediaRecorder.current.start(2000); // 2 second chunks
             setIsRecording(true);
             setIsTranscribing(true);
             setRecordingTime(0);
@@ -113,8 +139,10 @@ export function Recorder({ onTranscription }: RecorderProps) {
             timerInterval.current = setInterval(() => {
                 setRecordingTime(prev => prev + 1);
             }, 1000);
+
+            console.log("🎙️ Recording started");
         } catch (err) {
-            console.error("Recording error:", err);
+            console.error("❌ Recording error:", err);
             if ((err as DOMException).name === "NotAllowedError") {
                 alert("Microphone permission denied. Please allow microphone access.");
             } else if ((err as DOMException).name === "NotFoundError") {
@@ -128,10 +156,25 @@ export function Recorder({ onTranscription }: RecorderProps) {
 
     const stopRecording = () => {
         if (mediaRecorder.current && isRecording) {
+            console.log("⏹️ Stopping recording...");
             mediaRecorder.current.stop();
             setIsRecording(false);
             if (timerInterval.current) clearInterval(timerInterval.current);
-            setTimeout(() => setIsTranscribing(false), 1000);
+            
+            console.log("⏳ Waiting for transcription result from backend...");
+            
+            // Set a timeout to stop waiting after 30 seconds
+            const timeout = setTimeout(() => {
+                if (isTranscribing) {
+                    console.warn("⚠️ Transcription timeout - no response from backend after 30 seconds");
+                    setIsTranscribing(false);
+                }
+            }, 30000);
+            
+            // Store timeout so we can clear it if we get a response
+            if (!(ws.current as any).transcriptionTimeout) {
+                (ws.current as any).transcriptionTimeout = timeout;
+            }
         }
     };
 
@@ -174,22 +217,25 @@ export function Recorder({ onTranscription }: RecorderProps) {
                         )}
                     </AnimatePresence>
 
-                    {isRecording ? (
-                        <Button 
-                            className="rounded-xl h-12 px-6 bg-rose-600 hover:bg-rose-700 shadow-lg shadow-rose-100 font-bold" 
-                            onClick={stopRecording}
-                        >
-                            <Square size={18} className="mr-2" /> Stop Recording
-                        </Button>
-                    ) : (
-                        <Button
-                            className="rounded-xl h-12 px-6 text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg shadow-indigo-100 font-bold"
-                            onClick={startRecording}
-                            disabled={isTranscribing}
-                        >
-                            <Mic size={18} className="mr-2" /> Start Recording
-                        </Button>
-                    )}
+                    <Button
+                        onClick={isRecording ? stopRecording : startRecording}
+                        className={cn(
+                            "rounded-xl h-12 px-6 font-bold transition-all",
+                            isRecording
+                                ? "bg-rose-600 hover:bg-rose-700 text-white"
+                                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                        )}
+                    >
+                        {isRecording ? (
+                            <>
+                                <Square size={18} className="mr-2" /> Stop Recording
+                            </>
+                        ) : (
+                            <>
+                                <Mic size={18} className="mr-2" /> Start Recording
+                            </>
+                        )}
+                    </Button>
                 </div>
             </div>
         </Card>

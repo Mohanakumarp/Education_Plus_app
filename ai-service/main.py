@@ -257,11 +257,13 @@ async def websocket_transcribe(websocket: WebSocket):
                     delta_text = session.get_delta_text(full_text)
                     
                     # Send final transcription
-                    await websocket.send_json({
+                    response = {
                         "text": delta_text,
                         "complete": True,
-                    })
-                    
+                    }
+                    print(f"📤 Sending WebSocket response: {response}")
+                    await websocket.send_json(response)
+                    await asyncio.sleep(0.1)  # Small delay to ensure message is sent
                     print(f"✅ Sent final transcription: {delta_text}")
                     
                     # Reset for next recording session
@@ -284,10 +286,12 @@ async def websocket_transcribe(websocket: WebSocket):
                     
                     if delta_text:
                         # Send partial transcription
-                        await websocket.send_json({
+                        response = {
                             "text": delta_text,
                             "complete": False,
-                        })
+                        }
+                        print(f"📤 Sending partial WebSocket response: {response}")
+                        await websocket.send_json(response)
                         print(f"📤 Sent partial transcription: {delta_text}")
                     
                     # Reset chunk count for next batch

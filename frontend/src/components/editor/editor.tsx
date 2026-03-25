@@ -169,35 +169,44 @@ export function Editor({ note }: EditorProps) {
     };
 
     const handleTranscription = (text: string, isComplete: boolean) => {
-        if (!editor) return;
+        if (!editor || !text.trim()) return;
 
-        // Append to live transcription
-        setLiveTranscription(prev => prev + (prev ? " " : "") + text);
+        console.log("🎯 handleTranscription called:", { text, isComplete });
 
-        if (isComplete) {
-            // When transcription chunk is complete, insert into editor
-            if (!currentParagraphRef.current) {
-                // Start a new paragraph
-                editor.commands.insertContent(`<p>${text}</p>`);
-                currentParagraphRef.current = true;
+        try {
+            // Always insert the transcribed text immediately
+            const currentContent = editor.getHTML();
+            
+            // If editor is empty or has only placeholder, replace it
+            if (!currentContent || currentContent === "<p></p>" || currentContent.includes("Start typing")) {
+                editor
+                    .chain()
+                    .focus()
+                    .clearContent()
+                    .insertContent(`<p>${text}</p>`)
+                    .run();
+                console.log("✅ Inserted new paragraph:", text);
             } else {
-                // Append to existing paragraph - find the last paragraph and update it
-                const { $anchor } = editor.state.selection;
-                const lastNode = editor.state.doc.lastChild;
-                
-                if (lastNode?.type.name === 'paragraph') {
-                    // Add to existing paragraph
-                    editor.commands.insertContent(` ${text}`);
-                } else {
-                    // Create new paragraph if last node isn't a paragraph
-                    editor.commands.insertContent(`<p>${text}</p>`);
-                    currentParagraphRef.current = false;
-                }
+                // Append to existing content
+                editor
+                    .chain()
+                    .focus("end")
+                    .insertContent(` ${text}`)
+                    .run();
+                console.log("✅ Appended to existing content:", text);
             }
 
-            // Auto-save after each complete chunk
+            // Mark for saving
             pendingSave.current = true;
             setContentVersion((prev) => prev + 1);
+            
+            // Auto-save after transcription
+            if (isComplete) {
+                console.log("💾 Triggering auto-save...");
+                setContentVersion((prev) => prev + 1);
+            }
+        } catch (error) {
+            console.error("❌ Error in handleTranscription:", error);
         }
     };
 
