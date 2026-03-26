@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { WhiteboardClient } from "./whiteboard-client";
-import { Button } from "@/components/ui/button";
-import { Share2, Plus, Users, Layout } from "lucide-react";
+import { WhiteboardActions } from "./whiteboard-actions";
+import { Plus, Users, Layout } from "lucide-react";
 
 export default async function WhiteboardPage({ searchParams }: { searchParams: Promise<{ boardId?: string }> }) {
     const session = await auth();
@@ -25,14 +25,7 @@ export default async function WhiteboardPage({ searchParams }: { searchParams: P
                         Visualize ideas, solve problems, and collaborate in real-time.
                     </p>
                 </div>
-                <div className="flex items-center gap-3">
-                    <Button variant="outline" className="rounded-xl border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
-                        <Share2 size={18} className="mr-2" /> Invite Others
-                    </Button>
-                    <Button className="rounded-xl shadow-lg text-white shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold">
-                        <Plus size={18} className="mr-2" /> New Board
-                    </Button>
-                </div>
+                <WhiteboardActions boardId={currentBoardId} />
             </div>
 
             <div className="flex-1">

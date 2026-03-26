@@ -2,7 +2,8 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import { TrackerCharts } from "@/components/dashboard/tracker-charts";
 import { Button } from "@/components/ui/button";
-import { Download, Share2 } from "lucide-react";
+import { Share2 } from "lucide-react";
+import { ExportTrackerPdfButton } from "@/components/dashboard/export-tracker-pdf-button";
 
 import { getTrackerData } from "@/actions/tracker";
 
@@ -30,9 +31,16 @@ export default async function StudyTrackerPage() {
                     <Button variant="outline" className="rounded-xl border-slate-200 text-slate-600 font-bold hover:bg-slate-50">
                         <Share2 size={18} className="mr-2" /> Share Insights
                     </Button>
-                    <Button className="rounded-xl shadow-lg text-white shadow-indigo-100 bg-indigo-600 hover:bg-indigo-700 font-bold">
-                        <Download size={18} className="mr-2" /> Export PDF
-                    </Button>
+                    <ExportTrackerPdfButton
+                        chartData={data.chartData || []}
+                        subjectsData={data.subjectsData || []}
+                        stats={data.stats || {
+                            totalFocus: "0h",
+                            knowledgeEq: "0%",
+                            maxStreak: "0 Days",
+                            targetGap: "0h",
+                        }}
+                    />
                 </div>
             </div>
 
